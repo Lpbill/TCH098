@@ -18,31 +18,30 @@
 
 #define MODE_SW1 1
 #define	MODE_SW2 2
-//#define	MODE_SW3 3
+// Décommenter si le bouton sw3 est utilisé pour un mode
+//#define	MODE_SW3 3  
 
 //Constantes du mode 1
 const int VITESSE_MAX_ROUES_MODE_1 = 255;
+
 //Vitesse max de rotation sur lui meme
 const int VITESSE_MAX_ROTATION_MODE_1 = 100;
+
 //le differentiel devrait toujours etre de 10% de la vitesse max selon Youri
 const int DIFFERENTIEL_MODE_1 = 25;
 
 //Changer la valeur de la vitesse de la roue d'inertie pendant les tests et recompiler. Restera costante dans la competition
 //Nous changerons l'angle de la plateforme seulement
 
-
-const int VITESSE_INERTIE = 0;
+const int VITESSE_INERTIE = 120;
 
 //Changer les valeurs pour changer les angles du servo moteur. 0 degres: 1000, 90 degres: 2000
 const int VALEUR_SERVO_ATTENTE = 1000;
 const int VALEUR_SERVO_ARME = 2000;
 
-
-
 //Elevateur
 const int VITESSE_MAX_ELEVATEUR = 255;
 	
-
 
 
 //Prototypes
@@ -55,52 +54,45 @@ double scaleDroiteGauche(int entree, int differentielMax);
 int main(void)
 {		
 
-	//---------------------------
-  //VARIABLES
-  //------------------------------
+//---------------------------
+//VARIABLES
+//------------------------------
 
-	//Valeur int recues de la manette
-	int valeur_axe_x = 0;
-	int valeur_axe_y = 0;
-	int valeur_pot = 0;
-	int valeur_sw1 = 0;
-	int valeur_sw2 = 0;
-	int valeur_sw3 = 0;
-	int valeur_bp_joystick = 0;
-	
-	double vitesse=0;
-	double differentiel=0;
-	double vitesseRD=0;
-	double vitesseRG=0;
-	
-	double vitesseElevateur = 0;
-	
-	
-	int bouton_3_enfonce = FALSE;
-	int roue_inertie_marche = FALSE;
-	
-	
-	
-	
-  //Initilisation de sa valeur avec l'angle en attente
-	int valeur_servo = VALEUR_SERVO_ATTENTE;
-	
+//Valeur int recues de la manette
+int valeur_axe_x = 0;
+int valeur_axe_y = 0;
+int valeur_pot = 0;
+int valeur_sw1 = 0;
+int valeur_sw2 = 0;
+int valeur_sw3 = 0;
+int valeur_bp_joystick = 0;
 
-  //Etat 1 au debut sans appuyer sur aucun bouton
-	int state = 1;
-	//Variable boolean de si manette connectee 
+double vitesse=0;
+double differentiel=0;
+double vitesseRD=0;
+double vitesseRG=0;
+
+double vitesseElevateur = 0;
+
+// Variables d'États pour le bouton 3 et la roue d'inertie.
+int bouton_3_enfonce = FALSE;
+int roue_inertie_marche = FALSE;
+
+//Variable d'États pour la connection de la manette.
+int mannette_connecte = FALSE;
 	
 	
-	int mannette_connecte = 0;
-	
-	
-	
+//Initilisation de sa valeur avec l'angle en attente
+int valeur_servo = VALEUR_SERVO_ATTENTE;
 	
 
-	char string_recu[33];
-	//-----------------------------------------------------------------
+//Etat 1 au debut sans appuyer sur aucun bouton
+int state = MODE_SW1;
 
-  //-------------------------------------------------------
+// Création d'un tableau pour la réception de données de la manette.
+char string_recu[33];
+//-----------------------------------------------------------------
+//-------------------------------------------------------
 
   //Initialisation des sorties et du MLI
 
@@ -133,7 +125,7 @@ int main(void)
 	pwm2_set_PD6(0);
 			
 	//roue inertie
-	pwm2_set_PD7(VITESSE_INERTIE);
+	pwm2_set_PD7(0);
 			
 	//servomoteur
 	pwm1_set_PD5(VALEUR_SERVO_ATTENTE);
@@ -351,14 +343,13 @@ int main(void)
       //AJOUTER ICI LE MODE 2
 
       break;
+	/*
+      case MODE_SW3:
 
-      //case MODE_SW3:
-
-      //AJOUTER ICI LE MODE 3
+      AJOUTER ICI LE MODE 3
     
-     // break;
-        //
-        //FIN DE LA MACHINE DETAT
+      break;
+        //FIN DE LA MACHINE DETAT */
 
 			}
 
@@ -389,7 +380,7 @@ int main(void)
 				if (valeur_sw3 == 0 && bouton_3_enfonce == FALSE){
 					if (roue_inertie_marche == FALSE){
 						roue_inertie_marche = TRUE;
-						pwm2_set_PD7(120);
+						pwm2_set_PD7(VITESSE_INERTIE);
 					}
 					else if (roue_inertie_marche == TRUE){
 						roue_inertie_marche = FALSE;
