@@ -26,7 +26,7 @@ const int VITESSE_MAX_ROUES_MODE_1 = 255;
 
 //Vitesse max de rotation sur lui meme
 const int VITESSE_MAX_ROTATION_MODE_1 = 100;
-const int VITESSE_MAX_ROTATION_TIR = 25;
+const int VITESSE_MAX_ROTATION_TIR = 75;
 
 //le differentiel devrait toujours etre de 10% de la vitesse max selon Youri
 const int DIFFERENTIEL_MODE_1 = 25;
