@@ -39,9 +39,9 @@ const int VITESSE_INERTIE_2_5 = 140;
 const int VITESSE_INERTIE_3 = 180;
 
 //Changer les valeurs pour changer les angles du servo moteur. 0 degres: 1000, 90 degres: 2000
-const int VALEUR_SERVO_ATTENTE = 1500;
-const int VALEUR_SERVO_ARME = 1800;
-const int VALEUR_SERVO_REVIENS = 1100;
+const int VALEUR_SERVO_ATTENTE = 1650;
+const int VALEUR_SERVO_ARME = 2000;
+const int VALEUR_SERVO_REVIENS = 1200;
 
 //Elevateur
 const int VITESSE_MAX_ELEVATEUR = 255;
