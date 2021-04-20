@@ -66,7 +66,6 @@ int main(void)
 int valeur_axe_x = 0;
 int valeur_axe_y = 0;
 int valeur_pot = 0;
-int valeur_sw1 = 0;
 int valeur_sw2 = 0;
 int valeur_sw3 = 0;
 int valeur_bp_joystick = 0;
@@ -96,9 +95,6 @@ int servo_cycle = 0;
 
 //Variable d'États pour la connection de la manette.
 int mannette_connecte = FALSE;
-	
-//Initilisation de sa valeur avec l'angle en attente
-int valeur_servo = VALEUR_SERVO_ATTENTE;
 	
 // Création d'un tableau pour la réception de données de la manette.
 char string_recu[33];
@@ -165,7 +161,6 @@ char string_recu[33];
 			valeur_axe_x = 0;
 			valeur_axe_y = 0;
 			valeur_pot = 0;
-			valeur_sw1 = 0;
 			valeur_sw2 = 0;
 			valeur_sw3 = 0;
 			valeur_bp_joystick = 0;
@@ -178,7 +173,6 @@ char string_recu[33];
 			vitesseRG= 0;
 			differentiel= 0;
 			vitesseElevateur = 0;
-			valeur_servo = VALEUR_SERVO_ATTENTE;
 
 		
 			//********************************************
@@ -187,7 +181,6 @@ char string_recu[33];
 			valeur_axe_x += 100* char_to_uint(string_recu[1]) +  10* char_to_uint(string_recu[2])+  char_to_uint(string_recu[3]);
 			valeur_axe_y += 100* char_to_uint(string_recu[4]) +  10* char_to_uint(string_recu[5])+  char_to_uint(string_recu[6]);
 			valeur_pot += 100* char_to_uint(string_recu[7]) +  10* char_to_uint(string_recu[8])+  char_to_uint(string_recu[9]);
-			valeur_sw1 = string_recu[10]- 48;
 			valeur_sw2 = string_recu[11]- 48;
 			valeur_sw3 = string_recu[12]- 48;
 			valeur_bp_joystick = string_recu[13]- 48;
