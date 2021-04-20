@@ -403,35 +403,36 @@ char string_recu[33];
 				if (valeur_bp_joystick == 0 && joystick_enfonce == FALSE){
 					servo_en_cours = TRUE;
 					servo_etape = 1;
+					servo_cycle = 0;
 				}
 				if (servo_en_cours == TRUE){
 					switch (servo_etape){
 						case 1:
-							servo_cycle = 0;
 							pwm1_set_PD5(VALEUR_SERVO_REVIENS);
 							servo_cycle++;
 							_delay_ms(1);
-							if (servo_cycle >= 500){
+							if (servo_cycle >= 5){
 								servo_etape = 2;
+								servo_cycle = 0;
 							}
 							break;
 						case 2:
-							servo_cycle = 0;
 							pwm1_set_PD5(VALEUR_SERVO_ARME);
 							servo_cycle++;
 							_delay_ms(1);
-							if (servo_cycle >= 500){
+							if (servo_cycle >= 5){
 								servo_etape = 3;
+								servo_cycle = 0;
 							}
 							break;
 						case 3:
-							servo_cycle = 0;
 							pwm1_set_PD5(VALEUR_SERVO_ATTENTE);
 							servo_cycle++;
 							_delay_ms(1);
-							if (servo_cycle >= 500){
+							if (servo_cycle >= 5){
 								servo_etape = 0;
 								servo_en_cours = FALSE;
+								servo_cycle = 0;
 							}
 							break;
 					}
