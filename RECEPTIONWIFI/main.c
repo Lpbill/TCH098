@@ -26,6 +26,7 @@ const int VITESSE_MAX_ROUES_MODE_1 = 255;
 
 //Vitesse max de rotation sur lui meme
 const int VITESSE_MAX_ROTATION_MODE_1 = 100;
+const int VITESSE_MAX_ROTATION_TIR = 25;
 
 //le differentiel devrait toujours etre de 10% de la vitesse max selon Youri
 const int DIFFERENTIEL_MODE_1 = 25;
@@ -275,7 +276,12 @@ char string_recu[33];
 				
 				//Cas special permettant de faire tournern le vehicule sur lui meme
 				else if (valeur_axe_x < 145 && valeur_axe_x > 110){
-					vitesse = scaleDroiteGauche(valeur_axe_y, VITESSE_MAX_ROTATION_MODE_1);
+					if (roue_inertie_marche == TRUE){
+						vitesse = scaleDroiteGauche(valeur_axe_y, VITESSE_MAX_ROTATION_TIR);
+					}
+					else{
+						vitesse = scaleDroiteGauche(valeur_axe_y, VITESSE_MAX_ROTATION_MODE_1);
+					}
 					vitesseRG = vitesse;
 					vitesseRD = vitesse;
 
