@@ -37,7 +37,7 @@ const int DIFFERENTIEL_MODE_1 = 25;
 const int VITESSE_INERTIE = 120;
 
 //Changer les valeurs pour changer les angles du servo moteur. 0 degres: 1000, 90 degres: 2000
-const int VALEUR_SERVO_ATTENTE = 1800;
+const int VALEUR_SERVO_ATTENTE = 1650;
 const int VALEUR_SERVO_ARME = 2000;
 const int VALEUR_SERVO_REVIENS = 1200;
 
