@@ -2,7 +2,7 @@
  * RECEPTION WIFI
  *
  * Created: 2/12/2021 2:03:27 PM
- * Author : beaul
+ * Author : beaul et L-P
  */ 
 #include <stdio.h>
 #include <avr/io.h>
@@ -89,14 +89,9 @@ int servo_cycle = 0;
 //Variable d'États pour la connection de la manette.
 int mannette_connecte = FALSE;
 	
-	
 //Initilisation de sa valeur avec l'angle en attente
 int valeur_servo = VALEUR_SERVO_ATTENTE;
 	
-
-//Etat 1 au debut sans appuyer sur aucun bouton
-int state = MODE_SW1;
-
 // Création d'un tableau pour la réception de données de la manette.
 char string_recu[33];
 //-----------------------------------------------------------------
@@ -168,7 +163,6 @@ char string_recu[33];
 			valeur_bp_joystick = 0;
 			
 			
-			state = 1;
 
 			//Remettre a zero les valeurs de moteurs
 			vitesse = 0;
@@ -199,173 +193,118 @@ char string_recu[33];
 			//lcd_set_cursor_position(0,1);
 			//lcd_write_string(str_test);
 			
-			//********************************************
-			// Gestion de la machine d'�tat selon le mode
-			//********************************************
-			if (valeur_sw1 == 0){
-				state = MODE_SW1;
-				lcd_clear_display();
-			}
-			if (valeur_sw2 == 0){
-				state = MODE_SW2;
-				lcd_clear_display();
-			}
-			/*if (valeur_sw3 == 0){
-				state = MODE_SW3;
-				lcd_clear_display();
-			}*/
-                            //********************************************
-                            // MACHINE DETAT SELON LE MODE
-                            //********************************************
 			
-			switch(state){
-
-				//MODE NORMAL 
-				case MODE_SW1:
-				lcd_set_cursor_position(0,0);
-				lcd_write_string("Mode normal  ");
+			
+			//Scaling de la vitesse
+			vitesse = scaleAvantArriere(valeur_axe_x,VITESSE_MAX_ROUES_MODE_1);
+			differentiel = scaleDroiteGauche(valeur_axe_y, DIFFERENTIEL_MODE_1);	
+			
+		
+			
+			//Affectation du differentiel et du sens de rotation 
+			if (vitesse > 0){
+				vitesseRD = vitesse - differentiel;
+				vitesseRG = vitesse + differentiel;
+				//Roues gauches U7 et U9-----------------------------
+				//Affectation de la bonne direction sur les pont en H respectif
+				PORTB = set_bit(PORTB, PB1);	
+				//Roues droites U6 et U8------------------------------
+				//Affectation de la bonne durection sur les pont en H respectif
+				PORTB = clear_bit(PORTB, PB2);
+			}
+			if (vitesse < 0){
+					vitesseRD = vitesse + differentiel;
+					vitesseRG = vitesse - differentiel;
+				//Roues gauches U7 et U9-----------------------------
+				//Affectation de la bonne direction sur les pont en H respectif
+				PORTB = clear_bit(PORTB, PB1);
+				//Roues droites U6 et U8------------------------------
+				//Affectation de la bonne durection sur les pont en H respectif
+				PORTB = set_bit(PORTB, PB2);
+				
+			}
+			
+			/////////////////////
+			//EDGE CASES !
+			///////////////////
+			
 	
-				
-				//Scaling de la vitesse
-				vitesse = scaleAvantArriere(valeur_axe_x,VITESSE_MAX_ROUES_MODE_1);
-				differentiel = scaleDroiteGauche(valeur_axe_y, DIFFERENTIEL_MODE_1);	
-				
+			if (vitesseRD > VITESSE_MAX_ROUES_MODE_1){
+				vitesseRD = VITESSE_MAX_ROUES_MODE_1;
+			}
+			if (vitesseRG > VITESSE_MAX_ROUES_MODE_1){
+				vitesseRG = VITESSE_MAX_ROUES_MODE_1;
+			}
+			if (vitesseRD < -VITESSE_MAX_ROUES_MODE_1){
+				vitesseRD = -VITESSE_MAX_ROUES_MODE_1;
+			}
+			if (vitesseRG < -VITESSE_MAX_ROUES_MODE_1){
+				vitesseRG = -VITESSE_MAX_ROUES_MODE_1;
+			}
 			
-				
-				//Affectation du differentiel et du sens de rotation 
-				if (vitesse > 0){
-					vitesseRD = vitesse - differentiel;
-					vitesseRG = vitesse + differentiel;
-					//Roues gauches U7 et U9-----------------------------
-					//Affectation de la bonne direction sur les pont en H respectif
-					PORTB = set_bit(PORTB, PB1);	
-					//Roues droites U6 et U8------------------------------
-					//Affectation de la bonne durection sur les pont en H respectif
-					PORTB = clear_bit(PORTB, PB2);
+			
+			//Cas special permettant de faire tournern le vehicule sur lui meme
+			else if (valeur_axe_x < 145 && valeur_axe_x > 110){
+				if (roue_inertie_marche == TRUE){
+					vitesse = scaleDroiteGauche(valeur_axe_y, VITESSE_MAX_ROTATION_TIR);
 				}
-				if (vitesse < 0){
-						vitesseRD = vitesse + differentiel;
-						vitesseRG = vitesse - differentiel;
+				else{
+					vitesse = scaleDroiteGauche(valeur_axe_y, VITESSE_MAX_ROTATION_MODE_1);
+				}
+				vitesseRG = vitesse;
+				vitesseRD = vitesse;
+
+
+				if (vitesse > 0){
 					//Roues gauches U7 et U9-----------------------------
 					//Affectation de la bonne direction sur les pont en H respectif
-					PORTB = clear_bit(PORTB, PB1);
+					PORTB = set_bit(PORTB, PB1);
 					//Roues droites U6 et U8------------------------------
 					//Affectation de la bonne durection sur les pont en H respectif
 					PORTB = set_bit(PORTB, PB2);
 					
 				}
-				
-				/////////////////////
-				//EDGE CASES !
-				///////////////////
-				
+				else if (vitesse < 0){
+					//Roues gauches U7 et U9-----------------------------
+					//Affectation de la bonne direction sur les pont en H respectif
+					PORTB = clear_bit(PORTB, PB1);
+					//Roues droites U6 et U8------------------------------
+					//Affectation de la bonne durection sur les pont en H respectif
+					PORTB = clear_bit(PORTB, PB2);
+					
+				}
+			}
+			
+			
+		///////////////////////////////////////////////////
+		//				    ELEVATEUR
+		///////////////////////////////////////////////////
 		
-				if (vitesseRD > VITESSE_MAX_ROUES_MODE_1){
-					vitesseRD = VITESSE_MAX_ROUES_MODE_1;
-				}
-				if (vitesseRG > VITESSE_MAX_ROUES_MODE_1){
-					vitesseRG = VITESSE_MAX_ROUES_MODE_1;
-				}
-				if (vitesseRD < -VITESSE_MAX_ROUES_MODE_1){
-					vitesseRD = -VITESSE_MAX_ROUES_MODE_1;
-				}
-				if (vitesseRG < -VITESSE_MAX_ROUES_MODE_1){
-					vitesseRG = -VITESSE_MAX_ROUES_MODE_1;
-				}
-				
-				
-				//Cas special permettant de faire tournern le vehicule sur lui meme
-				else if (valeur_axe_x < 145 && valeur_axe_x > 110){
-					if (roue_inertie_marche == TRUE){
-						vitesse = scaleDroiteGauche(valeur_axe_y, VITESSE_MAX_ROTATION_TIR);
-					}
-					else{
-						vitesse = scaleDroiteGauche(valeur_axe_y, VITESSE_MAX_ROTATION_MODE_1);
-					}
-					vitesseRG = vitesse;
-					vitesseRD = vitesse;
+		//1 Calcul vitesse moteur
+		
+		vitesseElevateur = scaleElevateur(valeur_pot, VITESSE_MAX_ELEVATEUR);
+		
+		
+		//2. sens de rotation
 
-
-					if (vitesse > 0){
-						//Roues gauches U7 et U9-----------------------------
-						//Affectation de la bonne direction sur les pont en H respectif
-						PORTB = set_bit(PORTB, PB1);
-						//Roues droites U6 et U8------------------------------
-						//Affectation de la bonne durection sur les pont en H respectif
-						PORTB = set_bit(PORTB, PB2);
-						
-					}
-					else if (vitesse < 0){
-						//Roues gauches U7 et U9-----------------------------
-						//Affectation de la bonne direction sur les pont en H respectif
-						PORTB = clear_bit(PORTB, PB1);
-						//Roues droites U6 et U8------------------------------
-						//Affectation de la bonne durection sur les pont en H respectif
-						PORTB = clear_bit(PORTB, PB2);
-						
-					}
-				}
-				
-				
-			///////////////////////////////////////////////////
-			//				    ELEVATEUR
-			///////////////////////////////////////////////////
+		if (vitesseElevateur > 0){
+			PORTB = set_bit(PORTB, PB0);
+		}
+		if (vitesseElevateur < 0){
+			PORTB = clear_bit(PORTB, PB0);
+		}
+		
+		
+		//3. Edge Cases
+		
+		//Ajutement des valeurs hors du range
+		if (vitesseElevateur > VITESSE_MAX_ELEVATEUR){
+			vitesseElevateur = VITESSE_MAX_ELEVATEUR;
+		}
+		if (vitesseElevateur < -VITESSE_MAX_ELEVATEUR){
+			vitesseElevateur = -VITESSE_MAX_ELEVATEUR;
+		}	
 			
-			//1 Calcul vitesse moteur
-			
-			vitesseElevateur = scaleElevateur(valeur_pot, VITESSE_MAX_ELEVATEUR);
-			
-			
-			//2. sens de rotation
-	
-			if (vitesseElevateur > 0){
-				PORTB = set_bit(PORTB, PB0);
-			}
-			if (vitesseElevateur < 0){
-				PORTB = clear_bit(PORTB, PB0);
-			}
-			
-			
-			//3. Edge Cases
-			
-			//Ajutement des valeurs hors du range
-			if (vitesseElevateur > VITESSE_MAX_ELEVATEUR){
-				vitesseElevateur = VITESSE_MAX_ELEVATEUR;
-			}
-			if (vitesseElevateur < -VITESSE_MAX_ELEVATEUR){
-				vitesseElevateur = -VITESSE_MAX_ELEVATEUR;
-			}	
-			
-			
-			///////////////////////////////////////////////////
-			//				SERVO MOTEUR
-			///////////////////////////////////////////
-			//Verifiction de la valeur du jystick pour actionner le servomoteur si besoin
-			if (valeur_bp_joystick == 0){
-				//Actionner le sevo moteur
-				valeur_servo = VALEUR_SERVO_ARME;
-			}
-			
-	
-				
-				break;
-
-
-      case MODE_SW2:
-
-      //AJOUTER ICI LE MODE 2
-
-      break;
-	/*
-      case MODE_SW3:
-
-      AJOUTER ICI LE MODE 3
-    
-      break;
-        //FIN DE LA MACHINE DETAT */
-
-			}
-
 		 //*************************************************
 		//AFFECTATION DES VALEURS AUX MOTEURS
 		//*************************************************
@@ -470,6 +409,7 @@ char string_recu[33];
 		//*************************************************
       //AFFICHAGE LCD 
       //*************************************************
+      /*
 			char strRD[10];
 			char strRG[10];
 			char strelev[10];
@@ -487,6 +427,7 @@ char string_recu[33];
 			lcd_write_string(strRD);
 			lcd_set_cursor_position(12, 1);
 			lcd_write_string(strelev);
+	*/
 		}
 			
 		
@@ -560,10 +501,12 @@ void fonctionConnection(int *manette_connecte){
 	int i = 0;
 		if (uart_rx_buffer_nb_line(UART_0) != 0){
 			*manette_connecte = TRUE;
+			lcd_clear_display();
 			lcd_set_cursor_position(0,0);
 			lcd_write_string("  connecte");
 			i = 0;
 		}else{
+			lcd_clear_display();
 			lcd_set_cursor_position(0,0);
 			lcd_write_string("Deconnecte");
 			while (uart_rx_buffer_nb_line(UART_0) == 0){
