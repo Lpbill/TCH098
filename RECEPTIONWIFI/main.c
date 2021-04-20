@@ -36,8 +36,9 @@ const int DIFFERENTIEL_MODE_1 = 25;
 const int VITESSE_INERTIE = 120;
 
 //Changer les valeurs pour changer les angles du servo moteur. 0 degres: 1000, 90 degres: 2000
-const int VALEUR_SERVO_ATTENTE = 1000;
-const int VALEUR_SERVO_ARME = 2000;
+const int VALEUR_SERVO_ATTENTE = 1500;
+const int VALEUR_SERVO_ARME = 1800;
+const int VALEUR_SERVO_REVIENS = 1100;
 
 //Elevateur
 const int VITESSE_MAX_ELEVATEUR = 255;
@@ -77,6 +78,12 @@ double vitesseElevateur = 0;
 // Variables d'États pour le bouton 3 et la roue d'inertie.
 int bouton_3_enfonce = FALSE;
 int roue_inertie_marche = FALSE;
+
+//Variables d'États pour le servo
+int joystick_enfonce = FALSE;
+int servo_en_cours = FALSE;
+int servo_etape = 0;
+int servo_cycle = 0;
 
 //Variable d'États pour la connection de la manette.
 int mannette_connecte = FALSE;
@@ -390,7 +397,45 @@ char string_recu[33];
 				}
 				
 				//servomoteur
-				pwm1_set_PD5(valeur_servo);
+				if (valeur_bp_joystick == 1 && servo_en_cours == FALSE){
+					joystick_enfonce = FALSE;
+				}
+				if (valeur_bp_joystick == 0 && joystick_enfonce == FALSE){
+					servo_en_cours = TRUE;
+					servo_etape = 1;
+				}
+				if (servo_en_cours == TRUE){
+					switch (servo_etape){
+						case 1:
+							servo_cycle = 0;
+							pwm1_set_PD5(VALEUR_SERVO_REVIENS);
+							servo_cycle++;
+							_delay_ms(1);
+							if (servo_cycle >= 500){
+								servo_etape = 2;
+							}
+							break;
+						case 2:
+							servo_cycle = 0;
+							pwm1_set_PD5(VALEUR_SERVO_ARME);
+							servo_cycle++;
+							_delay_ms(1);
+							if (servo_cycle >= 500){
+								servo_etape = 3;
+							}
+							break;
+						case 3:
+							servo_cycle = 0;
+							pwm1_set_PD5(VALEUR_SERVO_ATTENTE);
+							servo_cycle++;
+							_delay_ms(1);
+							if (servo_cycle >= 500){
+								servo_etape = 0;
+								servo_en_cours = FALSE;
+							}
+							break;
+					}
+				}
 				
 				
 			}
