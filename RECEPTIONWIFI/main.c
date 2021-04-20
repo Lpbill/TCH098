@@ -34,7 +34,9 @@ const int DIFFERENTIEL_MODE_1 = 25;
 //Changer la valeur de la vitesse de la roue d'inertie pendant les tests et recompiler. Restera costante dans la competition
 //Nous changerons l'angle de la plateforme seulement
 
-const int VITESSE_INERTIE = 120;
+const int VITESSE_INERTIE_2 = 120;
+const int VITESSE_INERTIE_2_5 = 140;
+const int VITESSE_INERTIE_3 = 180;
 
 //Changer les valeurs pour changer les angles du servo moteur. 0 degres: 1000, 90 degres: 2000
 const int VALEUR_SERVO_ATTENTE = 1500;
@@ -75,6 +77,12 @@ double vitesseRD=0;
 double vitesseRG=0;
 
 double vitesseElevateur = 0;
+int vitesse_inertie = VITESSE_INERTIE_2;
+
+// Variables d'États pour le bouton 2
+
+int bouton_2_enfonce = FALSE;
+int mode_SW2 = 1;
 
 // Variables d'États pour le bouton 3 et la roue d'inertie.
 int bouton_3_enfonce = FALSE;
@@ -322,7 +330,39 @@ char string_recu[33];
 				vitesseElevateur = abs(vitesseElevateur);
 				pwm2_set_PD6(vitesseElevateur);
 				
-				//roue intertie
+				//Bouton 2
+
+				if (valeur_sw2 == 1){
+					bouton_2_enfonce = FALSE;
+				}
+				if (valeur_sw2 == 0 && bouton_2_enfonce == FALSE){
+					bouton_2_enfonce = TRUE;
+					switch(mode_SW2){
+						case 1:
+							mode_SW2++;
+							vitesse_inertie = VITESSE_INERTIE_2;
+							if (roue_inertie_marche == TRUE){
+								pwm2_set_PD7(vitesse_inertie);
+							}
+							break;
+						case 2:
+							mode_SW2++;
+							vitesse_inertie = VITESSE_INERTIE_2_5;
+							if (roue_inertie_marche == TRUE){
+								pwm2_set_PD7(vitesse_inertie);
+							}
+							break;
+						case 3:
+							mode_SW2 = 1;
+							vitesse_inertie = VITESSE_INERTIE_3;
+							if (roue_inertie_marche == TRUE){
+								pwm2_set_PD7(vitesse_inertie);
+							}
+							break;
+					}
+				}
+
+				//Bouton 3
 				
 			
 				if(valeur_sw3 == 1){
@@ -332,7 +372,7 @@ char string_recu[33];
 				if (valeur_sw3 == 0 && bouton_3_enfonce == FALSE){
 					if (roue_inertie_marche == FALSE){
 						roue_inertie_marche = TRUE;
-						pwm2_set_PD7(VITESSE_INERTIE);
+						pwm2_set_PD7(vitesse_inertie);
 					}
 					else if (roue_inertie_marche == TRUE){
 						roue_inertie_marche = FALSE;
@@ -403,34 +443,7 @@ char string_recu[33];
 				pwm1_set_PD5(VALEUR_SERVO_ATTENTE);
 				
 			}
-			
-			
-			
-		//*************************************************
-      //AFFICHAGE LCD 
-      //*************************************************
-      /*
-			char strRD[10];
-			char strRG[10];
-			char strelev[10];
-			uint8_to_string(strRG, vitesseRG);
-			uint8_to_string(strRD, vitesseRD);
-			uint8_to_string(strelev, vitesseElevateur);
-			
-			lcd_set_cursor_position(0, 1);
-			lcd_write_string("RG:");
-			lcd_set_cursor_position(3, 1);
-			lcd_write_string(strRG);
-			lcd_set_cursor_position(6, 1);
-			lcd_write_string("RD:");
-			lcd_set_cursor_position(9, 1);
-			lcd_write_string(strRD);
-			lcd_set_cursor_position(12, 1);
-			lcd_write_string(strelev);
-	*/
 		}
-			
-		
 }
 
 //*************************************************
