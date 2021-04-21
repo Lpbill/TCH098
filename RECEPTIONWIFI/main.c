@@ -519,10 +519,10 @@ double scaleElevateur(int entree, int vitesseMax){
 	//on le change pour une fonction de degre 3
 	a = vitesseMax/pow(vitesseMax+100, 3);
 	if (y>0){
-		vitesse = a*pow(y+100,3);
+		abs(vitesse = a*pow(y+100,3));
 	}
 	if (y < 0){
-		vitesse = a*pow(y-100,3);
+		abs(vitesse = a*pow(y-100,3));
 	}
 	//permet a la pateforme de ne pas bouger au milieu dans un range 
 	if (entree < 155 && entree > 100 ){
