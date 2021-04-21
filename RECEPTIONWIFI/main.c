@@ -34,9 +34,9 @@ const int DIFFERENTIEL_MODE_1 = 25;
 //Changer la valeur de la vitesse de la roue d'inertie pendant les tests et recompiler. Restera costante dans la competition
 //Nous changerons l'angle de la plateforme seulement
 
-const int VITESSE_INERTIE_2 = 120;
-const int VITESSE_INERTIE_2_5 = 140;
-const int VITESSE_INERTIE_3 = 180;
+const int VITESSE_INERTIE_2 = 80;
+const int VITESSE_INERTIE_2_5 = 100;
+const int VITESSE_INERTIE_3 = 120;
 
 //Changer les valeurs pour changer les angles du servo moteur. 0 degres: 1000, 90 degres: 2000
 const int VALEUR_SERVO_ATTENTE = 1650;
