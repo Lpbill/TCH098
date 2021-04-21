@@ -23,7 +23,7 @@
 
 //Constantes du mode 1
 const int VITESSE_MAX_ROUES_MODE_1 = 255;
-const int VITESSE_MAX_ROUES_MODE_1 = 155;
+const int VITESSE_MAX_ROUES_MODE_2 = 50;
 
 //Vitesse max de rotation sur lui meme
 const int VITESSE_MAX_ROTATION_MODE_1 = 100;
@@ -40,7 +40,7 @@ const int VITESSE_INERTIE_2_5 = 110;
 const int VITESSE_INERTIE_3 = 120;
 
 //Changer les valeurs pour changer les angles du servo moteur. 0 degres: 1000, 90 degres: 2000
-const int VALEUR_SERVO_ATTENTE = 1650;
+const int VALEUR_SERVO_ATTENTE = 1900;
 const int VALEUR_SERVO_ARME = 2000;
 const int VALEUR_SERVO_REVIENS = 1200;
 
