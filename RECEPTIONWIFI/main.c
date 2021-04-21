@@ -70,10 +70,10 @@ int valeur_sw2 = 1;
 int valeur_sw3 = 1;
 int valeur_bp_joystick = 0;
 
-double vitesse=0;
-double differentiel=0;
-double vitesseRD=0;
-double vitesseRG=0;
+double vitesse;
+double differentiel;
+double vitesseRD;
+double vitesseRG;
 
 double vitesseElevateur = 0;
 int vitesse_inertie = VITESSE_INERTIE_2;
