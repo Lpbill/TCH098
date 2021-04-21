@@ -63,11 +63,11 @@ int main(void)
 //------------------------------
 
 //Valeur int recues de la manette
-int valeur_axe_x = 0;
-int valeur_axe_y = 0;
-int valeur_pot = 0;
-int valeur_sw2 = 0;
-int valeur_sw3 = 0;
+int valeur_axe_x = 130;
+int valeur_axe_y = 123;
+int valeur_pot = 135;
+int valeur_sw2 = 1;
+int valeur_sw3 = 1;
 int valeur_bp_joystick = 0;
 
 double vitesse=0;
