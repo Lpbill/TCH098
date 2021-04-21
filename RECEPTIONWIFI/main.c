@@ -156,34 +156,38 @@ char string_recu[33];
 		if (mannette_connecte == TRUE){
 			
 			uart_get_line(UART_0, string_recu, 17);
-			
-			//Remettre a zero a chaque bouble while les valeurs construites de UART
-			valeur_axe_x = 0;
-			valeur_axe_y = 0;
-			valeur_pot = 0;
-			valeur_sw2 = 0;
-			valeur_sw3 = 0;
-			valeur_bp_joystick = 0;
-			
-			
 
-			//Remettre a zero les valeurs de moteurs
-			vitesse = 0;
-			vitesseRD = 0;
-			vitesseRG= 0;
-			differentiel= 0;
-			vitesseElevateur = 0;
+			if (string_recu[0] == '['){
+				
+			
+				//Remettre a zero a chaque bouble while les valeurs construites de UART
+				valeur_axe_x = 0;
+				valeur_axe_y = 0;
+				valeur_pot = 0;
+				valeur_sw2 = 0;
+				valeur_sw3 = 0;
+				valeur_bp_joystick = 0;
+				
+				
 
-		
-			//********************************************
-			//construction des valeurs numeriques recues du transmetteur
-			//*******************************************
-			valeur_axe_x += 100* char_to_uint(string_recu[1]) +  10* char_to_uint(string_recu[2])+  char_to_uint(string_recu[3]);
-			valeur_axe_y += 100* char_to_uint(string_recu[4]) +  10* char_to_uint(string_recu[5])+  char_to_uint(string_recu[6]);
-			valeur_pot += 100* char_to_uint(string_recu[7]) +  10* char_to_uint(string_recu[8])+  char_to_uint(string_recu[9]);
-			valeur_sw2 = string_recu[11]- 48;
-			valeur_sw3 = string_recu[12]- 48;
-			valeur_bp_joystick = string_recu[13]- 48;
+				//Remettre a zero les valeurs de moteurs
+				vitesse = 0;
+				vitesseRD = 0;
+				vitesseRG= 0;
+				differentiel= 0;
+				vitesseElevateur = 0;
+
+			
+				//********************************************
+				//construction des valeurs numeriques recues du transmetteur
+				//*******************************************
+				valeur_axe_x += 100* char_to_uint(string_recu[1]) +  10* char_to_uint(string_recu[2])+  char_to_uint(string_recu[3]);
+				valeur_axe_y += 100* char_to_uint(string_recu[4]) +  10* char_to_uint(string_recu[5])+  char_to_uint(string_recu[6]);
+				valeur_pot += 100* char_to_uint(string_recu[7]) +  10* char_to_uint(string_recu[8])+  char_to_uint(string_recu[9]);
+				valeur_sw2 = string_recu[11]- 48;
+				valeur_sw3 = string_recu[12]- 48;
+				valeur_bp_joystick = string_recu[13]- 48;
+			}
 		} 
 			
 			//********************************************
