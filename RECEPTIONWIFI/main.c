@@ -31,6 +31,7 @@ const int VITESSE_MAX_ROTATION_TIR = 75;
 
 //le differentiel devrait toujours etre de 10% de la vitesse max selon Youri
 const int DIFFERENTIEL_MODE_1 = 25;
+const int DIFFERENTIEL_MODE_2 = 5;
 
 //Changer la valeur de la vitesse de la roue d'inertie pendant les tests et recompiler. Restera costante dans la competition
 //Nous changerons l'angle de la plateforme seulement
@@ -72,6 +73,7 @@ int valeur_sw2 = 1;
 int valeur_sw3 = 1;
 int valeur_bp_joystick = 1;
 
+int diff_selon_mode = DIFFERENTIEL_MODE_1;
 int vitesse_max_roues = VITESSE_MAX_ROUES_MODE_1;
 double vitesse;
 double differentiel;
@@ -218,21 +220,21 @@ char string_recu[33];
 				switch (mode_SW1){
 					case 1:
 						vitesse_max_roues = VITESSE_MAX_ROUES_MODE_2;
+						diff_selon_mode = DIFFERENTIEL_MODE_2;
 						mode_SW1++;
 						break;
 					case 2:
 						vitesse_max_roues = VITESSE_MAX_ROUES_MODE_1;
+						diff_selon_mode = DIFFERENTIEL_MODE_1;
 						mode_SW1 = 1;
 						break;
 				}
 			}
 
 			//Scaling de la vitesse
-			vitesse = scaleAvantArriere(valeur_axe_x,VITESSE_MAX_ROUES_MODE_1);
-			differentiel = scaleDroiteGauche(valeur_axe_y, DIFFERENTIEL_MODE_1);	
-			
+			vitesse = scaleAvantArriere(valeur_axe_x,vitesse_max_roues);
+			differentiel = scaleDroiteGauche(valeur_axe_y, diff_selon_mode:);	
 		
-			
 			//Affectation du differentiel et du sens de rotation 
 			if (vitesse > 0){
 				vitesseRD = vitesse - differentiel;
@@ -261,17 +263,17 @@ char string_recu[33];
 			///////////////////
 			
 	
-			if (vitesseRD > VITESSE_MAX_ROUES_MODE_1){
-				vitesseRD = VITESSE_MAX_ROUES_MODE_1;
+			if (vitesseRD > vitesse_max_roues){
+				vitesseRD = vitesse_max_roues;
 			}
-			if (vitesseRG > VITESSE_MAX_ROUES_MODE_1){
-				vitesseRG = VITESSE_MAX_ROUES_MODE_1;
+			if (vitesseRG > vitesse_max_roues){
+				vitesseRG = vitesse_max_roues;
 			}
-			if (vitesseRD < -VITESSE_MAX_ROUES_MODE_1){
-				vitesseRD = -VITESSE_MAX_ROUES_MODE_1;
+			if (vitesseRD < -vitesse_max_roues){
+				vitesseRD = -vitesse_max_roues;
 			}
-			if (vitesseRG < -VITESSE_MAX_ROUES_MODE_1){
-				vitesseRG = -VITESSE_MAX_ROUES_MODE_1;
+			if (vitesseRG < -vitesse_max_roues){
+				vitesseRG = -vitesse_max_roues;
 			}
 			
 			
