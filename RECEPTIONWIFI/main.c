@@ -23,6 +23,7 @@
 
 //Constantes du mode 1
 const int VITESSE_MAX_ROUES_MODE_1 = 255;
+const int VITESSE_MAX_ROUES_MODE_1 = 155;
 
 //Vitesse max de rotation sur lui meme
 const int VITESSE_MAX_ROTATION_MODE_1 = 100;
@@ -66,10 +67,12 @@ int main(void)
 int valeur_axe_x = 130;
 int valeur_axe_y = 123;
 int valeur_pot = 135;
+int valeur_sw1 = 1;
 int valeur_sw2 = 1;
 int valeur_sw3 = 1;
 int valeur_bp_joystick = 1;
 
+int vitesse_max_roues = VITESSE_MAX_ROUES_MODE_1;
 double vitesse;
 double differentiel;
 double vitesseRD;
@@ -77,6 +80,11 @@ double vitesseRG;
 
 double vitesseElevateur = 0;
 int vitesse_inertie = VITESSE_INERTIE_2;
+
+// Variables d'États pour le bouton 1
+
+int bouton_1_enfonce = FALSE;
+int mode_SW1 = 1;
 
 // Variables d'États pour le bouton 2
 
@@ -164,6 +172,7 @@ char string_recu[33];
 				valeur_axe_x = 0;
 				valeur_axe_y = 0;
 				valeur_pot = 0;
+				valeur_sw1 = 0;
 				valeur_sw2 = 0;
 				valeur_sw3 = 0;
 				valeur_bp_joystick = 0;
@@ -184,6 +193,7 @@ char string_recu[33];
 				valeur_axe_x += 100* char_to_uint(string_recu[1]) +  10* char_to_uint(string_recu[2])+  char_to_uint(string_recu[3]);
 				valeur_axe_y += 100* char_to_uint(string_recu[4]) +  10* char_to_uint(string_recu[5])+  char_to_uint(string_recu[6]);
 				valeur_pot += 100* char_to_uint(string_recu[7]) +  10* char_to_uint(string_recu[8])+  char_to_uint(string_recu[9]);
+				valeur_sw1 = string_recu[11]- 48;
 				valeur_sw2 = string_recu[11]- 48;
 				valeur_sw3 = string_recu[12]- 48;
 				valeur_bp_joystick = string_recu[13]- 48;
@@ -198,8 +208,25 @@ char string_recu[33];
 			//lcd_set_cursor_position(0,1);
 			//lcd_write_string(str_test);
 			
-			
-			
+			//bouton 1
+
+			if (valeur_sw1 == 1){
+				bouton_1_enfonce == FALSE;
+			}
+			else if (valeur_sw1 == 0 && bouton_1_enfonce == FALSE){
+				bouton_1_enfonce == TRUE;
+				switch (mode_SW1){
+					case 1:
+						vitesse_max_roues = VITESSE_MAX_ROUES_MODE_2;
+						mode_SW1++;
+						break;
+					case 2:
+						vitesse_max_roues = VITESSE_MAX_ROUES_MODE_1;
+						mode_SW1 = 1;
+						break;
+				}
+			}
+
 			//Scaling de la vitesse
 			vitesse = scaleAvantArriere(valeur_axe_x,VITESSE_MAX_ROUES_MODE_1);
 			differentiel = scaleDroiteGauche(valeur_axe_y, DIFFERENTIEL_MODE_1);	
