@@ -25,6 +25,9 @@
 const int VITESSE_MAX_ROUES_MODE_1 = 255;
 const int VITESSE_MAX_ROUES_MODE_2 = 50;
 
+const int K_1 = 100;
+const int K_2 = 0;
+
 //Vitesse max de rotation sur lui meme
 const int VITESSE_MAX_ROTATION_MODE_1 = 100;
 const int VITESSE_MAX_ROTATION_TIR = 75;
@@ -51,7 +54,7 @@ const int VITESSE_MAX_ELEVATEUR = 255;
 
 
 //Prototypes
-double scaleAvantArriere(int entree, int vitesseMax);
+double scaleAvantArriere(int entree, int vitesseMax, int k);
 double scaleElevateur(int entree, int vitesseMax);
 
 void fonctionConnection(int *manette_connecte);
@@ -73,6 +76,7 @@ int valeur_sw2 = 1;
 int valeur_sw3 = 1;
 int valeur_bp_joystick = 1;
 
+int k_scale = K_1;
 int diff_selon_mode = DIFFERENTIEL_MODE_1;
 int vitesse_max_roues = VITESSE_MAX_ROUES_MODE_1;
 double vitesse;
@@ -195,7 +199,7 @@ char string_recu[33];
 				valeur_axe_x += 100* char_to_uint(string_recu[1]) +  10* char_to_uint(string_recu[2])+  char_to_uint(string_recu[3]);
 				valeur_axe_y += 100* char_to_uint(string_recu[4]) +  10* char_to_uint(string_recu[5])+  char_to_uint(string_recu[6]);
 				valeur_pot += 100* char_to_uint(string_recu[7]) +  10* char_to_uint(string_recu[8])+  char_to_uint(string_recu[9]);
-				valeur_sw1 = string_recu[11]- 48;
+				valeur_sw1 = string_recu[10]- 48;
 				valeur_sw2 = string_recu[11]- 48;
 				valeur_sw3 = string_recu[12]- 48;
 				valeur_bp_joystick = string_recu[13]- 48;
@@ -213,27 +217,29 @@ char string_recu[33];
 			//bouton 1
 
 			if (valeur_sw1 == 1){
-				bouton_1_enfonce == FALSE;
+				bouton_1_enfonce = FALSE;
 			}
 			else if (valeur_sw1 == 0 && bouton_1_enfonce == FALSE){
-				bouton_1_enfonce == TRUE;
+				bouton_1_enfonce = TRUE;
 				switch (mode_SW1){
 					case 1:
 						vitesse_max_roues = VITESSE_MAX_ROUES_MODE_2;
 						diff_selon_mode = DIFFERENTIEL_MODE_2;
+						k_scale = K_2;
 						mode_SW1++;
 						break;
 					case 2:
 						vitesse_max_roues = VITESSE_MAX_ROUES_MODE_1;
 						diff_selon_mode = DIFFERENTIEL_MODE_1;
+						k_scale = K_1;
 						mode_SW1 = 1;
 						break;
 				}
 			}
 
 			//Scaling de la vitesse
-			vitesse = scaleAvantArriere(valeur_axe_x,vitesse_max_roues);
-			differentiel = scaleDroiteGauche(valeur_axe_y, diff_selon_mode:);	
+			vitesse = scaleAvantArriere(valeur_axe_x,vitesse_max_roues,k_scale);
+			differentiel = scaleDroiteGauche(valeur_axe_y, diff_selon_mode);	
 		
 			//Affectation du differentiel et du sens de rotation 
 			if (vitesse > 0){
@@ -478,7 +484,7 @@ char string_recu[33];
 
 
 //Cette fonction fait le scaling avant arriere du joystick selon unbe fonction du 3e degre
-double scaleAvantArriere(int entree, int vitesseMax){
+double scaleAvantArriere(int entree, int vitesseMax, int k){
 	//On commence par le centrer sur 0 
 	double deltay = vitesseMax;
 	double deltax = vitesseMax-123;
@@ -486,15 +492,15 @@ double scaleAvantArriere(int entree, int vitesseMax){
 	double a;
 	double vitesse = 0;
 	//on le change pour une fonction de degre 3
-	a = vitesseMax/pow(vitesseMax+100, 3);
+	a = vitesseMax/pow(vitesseMax+k, 3);
 	
 	if (y>0){
 		
-		vitesse = a*pow(y+100,3);
+		vitesse = a*pow(y+k,3);
 	}
 	if (y< 0){
 		
-		vitesse = a*pow(y-100,3);
+		vitesse = a*pow(y-k,3);
 	}
 	
 	
