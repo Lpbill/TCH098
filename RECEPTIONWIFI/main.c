@@ -68,7 +68,7 @@ int valeur_axe_y = 123;
 int valeur_pot = 135;
 int valeur_sw2 = 1;
 int valeur_sw3 = 1;
-int valeur_bp_joystick = 0;
+int valeur_bp_joystick = 1;
 
 double vitesse;
 double differentiel;
