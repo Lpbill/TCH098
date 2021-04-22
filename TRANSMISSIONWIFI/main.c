@@ -1,9 +1,10 @@
 /*
- * GccApplication1.c
- *
- * Created: 2021-02-12 14:15:52
- * Author : ar09150
- */ 
+ * Projet : Transmission (manette)
+ * Dernière version: 16-04-2021 14:15:52
+ * Auteur : Pier-Olivier Beaulieu
+ */
+
+//Librairies
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -14,6 +15,7 @@
 #include "lcd.h"
 #include <util/delay.h>
 
+//Prototypes
 double scale(double entre,double entre_min, double entre_max, double sortie_min, double sortie_max);
 
 int main(void)
@@ -26,18 +28,11 @@ int main(void)
 	bool sw1_button_state;
 	bool sw2_button_state;
 	bool sw3_button_state;
-	
-	
-	
-	
-	// COnstruction du string UDP
+
+	// Construction du string UDP
 	char str[17];
-
-
-	 
 	
-	
-    //initialisation des couvertisseurs adc
+    //initialisation des convertisseurs adc
     adc_init();   
 	 
     //initialisation des ports de communications
@@ -71,25 +66,19 @@ int main(void)
 	// quand le bouton n'est pas enfoncé
 	PORTD = set_bit(PORTD, PD7);
 	
-	
-	
     //Activer les interruptions globales
     sei();
-
     lcd_init();
     lcd_clear_display();
     
-  
     
-    while (1)
-    {
+    while (1){
+        
 		//lecteur joystick horizontal
         horizontal = adc_read(PINA1);
-	
-	
+        
 		//Lecteur joystick vertical
         vertical = adc_read(PINA0);
-	
 		
 		//lecteur potentiomentre
 		valeurPotentiomentre = adc_read(PINA3);
@@ -100,17 +89,14 @@ int main(void)
 		//lecteur sw2
 		sw2_button_state = read_bit(PIND, PD6);
 		
-		
 		//lecteur sw3
 		sw3_button_state = read_bit(PIND, PD5);
 		
 		//Lecture BP joystick
 		joystick_button_state = read_bit(PINA, PA2);
-		
 
 		//Ajouter les valeurs lues dans le string message UDP
 		str[0] = '[';
-		
 		uint8_to_string(str+1, horizontal);
 		uint8_to_string(str+4, vertical);
 		uint8_to_string(str+7, valeurPotentiomentre);
@@ -129,11 +115,6 @@ int main(void)
 		
 		//Envoyer le message dans le UART
 		uart_put_string(UART_0,str);
-		
-	
         _delay_ms(100);
-        
- 
     }
 }
-
