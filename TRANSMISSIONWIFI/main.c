@@ -74,47 +74,47 @@ int main(void)
     
     while (1){
         
-		//lecteur joystick horizontal
-        horizontal = adc_read(PINA1);
-        
-		//Lecteur joystick vertical
-        vertical = adc_read(PINA0);
-		
-		//lecteur potentiomentre
-		valeurPotentiomentre = adc_read(PINA3);
+	//lecteur joystick horizontal
+	horizontal = adc_read(PINA1);
 
-		//lecteur sw1
-		sw1_button_state = read_bit(PIND, PD7);
-  
-		//lecteur sw2
-		sw2_button_state = read_bit(PIND, PD6);
-		
-		//lecteur sw3
-		sw3_button_state = read_bit(PIND, PD5);
-		
-		//Lecture BP joystick
-		joystick_button_state = read_bit(PINA, PA2);
+	//Lecteur joystick vertical
+	vertical = adc_read(PINA0);
+	
+	//lecteur potentiomentre
+	valeurPotentiomentre = adc_read(PINA3);
 
-		//Ajouter les valeurs lues dans le string message UDP
-		str[0] = '[';
-		uint8_to_string(str+1, horizontal);
-		uint8_to_string(str+4, vertical);
-		uint8_to_string(str+7, valeurPotentiomentre);
-		str[10] = sw1_button_state + 48;
-		str[11] = sw2_button_state + 48;
-		str[12] = sw3_button_state + 48;
-		str[13] = joystick_button_state + 48;
-		
-		str[14]= ']';
-		str[15] = '\n';
-		str[16] = '\0';
-		
-		//Ecrire sur le lcd pour tester
-		lcd_set_cursor_position(0,0);
-		lcd_write_string(str);
-		
-		//Envoyer le message dans le UART
-		uart_put_string(UART_0,str);
+	//lecteur sw1
+	sw1_button_state = read_bit(PIND, PD7);
+
+	//lecteur sw2
+	sw2_button_state = read_bit(PIND, PD6);
+	
+	//lecteur sw3
+	sw3_button_state = read_bit(PIND, PD5);
+	
+	//Lecture BP joystick
+	joystick_button_state = read_bit(PINA, PA2);
+
+	//Ajouter les valeurs lues dans le string message UDP
+	str[0] = '[';
+	uint8_to_string(str+1, horizontal);
+	uint8_to_string(str+4, vertical);
+	uint8_to_string(str+7, valeurPotentiomentre);
+	str[10] = sw1_button_state + 48;
+	str[11] = sw2_button_state + 48;
+	str[12] = sw3_button_state + 48;
+	str[13] = joystick_button_state + 48;
+	
+	str[14]= ']';
+	str[15] = '\n';
+	str[16] = '\0';
+	
+	//Ecrire sur le lcd pour tester
+	lcd_set_cursor_position(0,0);
+	lcd_write_string(str);
+	
+	//Envoyer le message dans le UART
+	uart_put_string(UART_0,str);
         _delay_ms(100);
     }
 }
